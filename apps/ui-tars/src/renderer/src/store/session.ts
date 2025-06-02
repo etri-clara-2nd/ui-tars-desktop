@@ -49,6 +49,7 @@ interface SessionState {
   ) => Promise<SessionItem | null>;
   deleteSession: (id: string) => Promise<boolean>;
   setActiveSession: (sessionId: string) => Promise<void>;
+  deleteAllSessions: () => Promise<void>;
 }
 
 export const useSessionStore = create<SessionState>((set, get) => ({
@@ -126,27 +127,25 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   },
 
   deleteSession: async (id) => {
-    try {
-      const deleted = await sessionManager.deleteSession(id);
-      await get().deleteMessages(id);
+    const { sessions } = get();
+    const session = sessions.find((s) => s.id === id);
+    if (!session) return;
 
-      if (deleted) {
-        set((state) => ({
-          sessions: state.sessions.filter((session) => session.id !== id),
-          currentSessionId:
-            state.currentSessionId === id ? '' : state.currentSessionId,
-        }));
-      }
-      return deleted;
-    } catch (err) {
-      console.error('deleteSession', err);
+    await sessionManager.deleteSession(id);
+    await chatManager.deleteSessionMessages(id);
+    set((state) => ({
+      sessions: state.sessions.filter((s) => s.id !== id),
+      currentSessionId:
+        state.currentSessionId === id ? '' : state.currentSessionId,
+    }));
+  },
 
-      set({
-        error:
-          err instanceof Error ? err : new Error('Failed to delete session'),
-      });
-      return false;
-    }
+  deleteAllSessions: async () => {
+    await sessionManager.deleteAllSessions();
+    set({
+      sessions: [],
+      currentSessionId: '',
+    });
   },
 
   createMessage: async (sessionId, messages) => {

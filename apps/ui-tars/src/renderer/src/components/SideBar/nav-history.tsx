@@ -3,7 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { useState } from 'react';
-import { MoreHorizontal, Trash2, History, ChevronRight } from 'lucide-react';
+import {
+  MoreHorizontal,
+  Trash2,
+  History,
+  ChevronRight,
+  Trash,
+} from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -38,6 +44,7 @@ import {
 } from '@renderer/components/ui/alert-dialog';
 import { SessionItem } from '@renderer/db/session';
 import { ShareOptions } from './share';
+import { useSession } from '@renderer/hooks/useSession';
 
 export function NavHistory({
   currentSessionId,
@@ -51,11 +58,17 @@ export function NavHistory({
   onSessionDelete: (id: string) => void;
 }) {
   const [isShareConfirmOpen, setIsShareConfirmOpen] = useState(false);
+  const [isDeleteAllConfirmOpen, setIsDeleteAllConfirmOpen] = useState(false);
   const [id, setId] = useState('');
+  const { deleteAllSessions } = useSession();
 
-  const handleDelte = (id: string) => {
+  const handleDelete = (id: string) => {
     setIsShareConfirmOpen(true);
     setId(id);
+  };
+
+  const handleDeleteAll = () => {
+    setIsDeleteAllConfirmOpen(true);
   };
 
   return (
@@ -69,16 +82,25 @@ export function NavHistory({
             className="group/collapsible"
           >
             <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton
-                  tooltip={'History'}
-                  className="!pr-2 font-medium"
+              <div className="flex items-center w-full">
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton
+                    tooltip={'History'}
+                    className="!pr-2 font-medium flex-1"
+                  >
+                    <History strokeWidth={2} />
+                    <span>History</span>
+                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <SidebarMenuAction
+                  className="ml-2"
+                  onClick={handleDeleteAll}
+                  tooltip="Delete All History"
                 >
-                  <History strokeWidth={2} />
-                  <span>History</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
+                  <Trash className="h-4 w-4 text-red-500" />
+                </SidebarMenuAction>
+              </div>
               <CollapsibleContent>
                 <SidebarMenuSub className="!mr-0 !pr-1">
                   {history.map((item) => (
@@ -104,7 +126,7 @@ export function NavHistory({
                           <ShareOptions sessionId={item.id} />
                           <DropdownMenuItem
                             className="text-red-400 focus:bg-red-50 focus:text-red-500"
-                            onClick={() => handleDelte(item.id)}
+                            onClick={() => handleDelete(item.id)}
                           >
                             <Trash2 className="text-red-400" />
                             <span>Delete</span>
@@ -119,6 +141,8 @@ export function NavHistory({
           </Collapsible>
         </SidebarMenu>
       </SidebarGroup>
+
+      {/* 개별 세션 삭제 확인 다이얼로그 */}
       <AlertDialog
         open={isShareConfirmOpen}
         onOpenChange={setIsShareConfirmOpen}
@@ -138,6 +162,34 @@ export function NavHistory({
               onClick={() => onSessionDelete(id)}
             >
               Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 전체 세션 삭제 확인 다이얼로그 */}
+      <AlertDialog
+        open={isDeleteAllConfirmOpen}
+        onOpenChange={setIsDeleteAllConfirmOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete All History</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete all history? This action cannot be
+              undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-500 hover:bg-red-600"
+              onClick={async () => {
+                await deleteAllSessions();
+                setIsDeleteAllConfirmOpen(false);
+              }}
+            >
+              Delete All
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

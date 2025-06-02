@@ -80,6 +80,15 @@ export class SessionManager {
     await del(id, sessionStore);
     return true;
   }
+
+  // 모든 세션 삭제
+  async deleteAllSessions(): Promise<boolean> {
+    const sessions = await this.getAllSessions();
+    for (const session of sessions) {
+      await this.deleteSession(session.id);
+    }
+    return true;
+  }
 }
 
 // 导出单例实例
