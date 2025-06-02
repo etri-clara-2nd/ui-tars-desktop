@@ -15,7 +15,7 @@ import {
 import { ActionIconMap } from '@renderer/const/actions';
 import { useSetting } from '@renderer/hooks/useSetting';
 
-import logo from '@resources/logo-full.png?url';
+import logo from '@resources/clara-logo.png?url';
 import { Button } from '@renderer/components/ui/button';
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '@renderer/api';
@@ -137,7 +137,7 @@ const Widget = () => {
     <div className="w-100 h-100 overflow-hidden p-4 bg-white/90 dark:bg-gray-800/90">
       <div className="flex draggable-area">
         {/* Logo */}
-        <img src={logo} alt="logo" className="-ml-2 h-6 mr-auto" />
+        <img src={logo} alt="CLARA" className="-ml-2 h-6 mr-auto" />
         {/* Mode Badge */}
         <div className="flex justify-center items-center text-xs border px-2 rounded-full text-gray-500">
           {getOperatorIcon(currentOperator)}

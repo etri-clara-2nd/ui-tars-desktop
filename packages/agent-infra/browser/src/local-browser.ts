@@ -62,6 +62,7 @@ export class LocalBrowser extends BaseBrowser {
         '--disable-features=IsolateOrigins,site-per-process',
         '--disable-site-isolation-trials',
         `--window-size=${viewportWidth},${viewportHeight + 90}`,
+        '--window-name=CLARA', // 브라우저 창 타이틀 설정
         options?.proxy ? `--proxy-server=${options.proxy}` : '',
         options?.profilePath
           ? `--profile-directory=${options.profilePath}`

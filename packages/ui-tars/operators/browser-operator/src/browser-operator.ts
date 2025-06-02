@@ -154,6 +154,7 @@ export class BrowserOperator extends Operator {
       const output: ScreenshotOutput = {
         base64: buffer.toString(),
         scaleFactor: viewport.deviceScaleFactor || 1,
+        mime: 'image/png',
       };
 
       this.logger.info('Screenshot Info', {
@@ -544,6 +545,22 @@ export class DefaultBrowserOperator extends BrowserOperator {
 
     if (!isCallUser) {
       const openingPage = await this.browser?.createPage();
+      await openingPage?.evaluate(() => {
+        // 타이틀 변경
+        document.title = 'CLARA';
+
+        // 로고 변경
+        const existingLink = document.querySelector(
+          "link[rel*='icon']",
+        ) as HTMLLinkElement | null;
+        const link =
+          existingLink || (document.createElement('link') as HTMLLinkElement);
+        link.type = 'image/x-icon';
+        link.rel = 'shortcut icon';
+        link.href =
+          'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzAwMCIgZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgMThjLTQuNDEgMC04LTMuNTktOC04czMuNTktOCA4LTggOCAzLjU5IDggOC0zLjU5IDgtOCA4eiIvPjwvc3ZnPg=='; // CLARA 로고 (SVG)
+        document.getElementsByTagName('head')[0].appendChild(link);
+      });
       await openingPage?.goto('https://www.google.com/', {
         waitUntil: 'networkidle2',
       });
