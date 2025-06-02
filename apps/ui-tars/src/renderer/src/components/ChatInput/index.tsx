@@ -275,20 +275,32 @@ const ChatInput = () => {
     );
   };
 
+  const getPlaceholderMessage = () => {
+    if (isCallUser && savedInstructions) {
+      return `${savedInstructions}`;
+    }
+    if (running && lastHumanMessage && messages?.length > 1) {
+      return lastHumanMessage;
+    }
+
+    switch (settings.operator) {
+      case 'browser':
+        return '무엇을 도와 드릴까요?(예: 허깅페이스 스페이스에서 etri-vilab/KOALA를 찾아서 실행해줘)';
+      case 'robot':
+        return '무엇을 도와 드릴까요?(예: "어디야?", "사과를 테이블 위로 옮겨줘")';
+      default:
+        return '무엇을 도와 드릴까요?(예: 내 바탕화면에서 뭘하고 있니)';
+    }
+  };
+
   return (
     <div className="p-4 w-full">
       <div className="flex flex-col space-y-4">
         <div className="relative w-full">
           <Textarea
             ref={textareaRef}
-            placeholder={
-              isCallUser && savedInstructions
-                ? `${savedInstructions}`
-                : running && lastHumanMessage && messages?.length > 1
-                  ? lastHumanMessage
-                  : 'What can I do for you today?'
-            }
-            className="min-h-[120px] rounded-2xl resize-none px-4 pb-16" // 调整内边距
+            placeholder={getPlaceholderMessage()}
+            className="min-h-[120px] rounded-2xl resize-none px-4 pb-16"
             value={localInstructions}
             disabled={running}
             onChange={(e) => setLocalInstructions(e.target.value)}
