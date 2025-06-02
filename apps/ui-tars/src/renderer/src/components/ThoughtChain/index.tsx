@@ -2,8 +2,11 @@
  * Copyright (c) 2025 Bytedance, Inc. and its affiliates.
  * SPDX-License-Identifier: Apache-2.0
  */
+import { useState } from 'react';
 import { MousePointerClick } from 'lucide-react';
 import { Button } from '@renderer/components/ui/button';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import { PredictionParsed } from '@ui-tars/shared/types';
 import { ActionIconMap } from '@renderer/const/actions';
@@ -45,10 +48,14 @@ function ThoughtStepCard({ step, onClick, hasSomImage }: ThoughtStepCardProps) {
 
       {vlmContent && (
         <div className="my-3">
-          <p className="text-blue-600 whitespace-pre-wrap leading-7 italic">
+          <div className="text-blue-600 leading-7 italic">
             <span className="font-medium text-blue-700">[Vision Analysis]</span>
-            {vlmContent}
-          </p>
+            <div className="prose prose-sm max-w-none prose-blue">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {vlmContent}
+              </ReactMarkdown>
+            </div>
+          </div>
         </div>
       )}
 

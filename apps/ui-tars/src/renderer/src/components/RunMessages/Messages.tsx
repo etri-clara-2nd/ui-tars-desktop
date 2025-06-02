@@ -7,6 +7,8 @@ import { AlertCircle, Camera, Loader2, User } from 'lucide-react';
 import { Button } from '@renderer/components/ui/button';
 import { cn } from '@renderer/utils';
 import claraLogo from '../../assets/clara-logo.png';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export const HumanTextMessage = ({ text }: { text: string }) => {
   return (
@@ -177,7 +179,9 @@ export const RobotTextMessage = ({
         <img src={claraLogo} alt="CLARA" className="h-6 w-6" />
       </div>
       <div className="flex-1 space-y-2">
-        <div className="text-sm text-foreground">{text}</div>
+        <div className="text-sm text-foreground prose prose-sm max-w-none">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
+        </div>
         {showScreenshot && (
           <div className="mt-2">
             {wsStatus === 'connecting' && (

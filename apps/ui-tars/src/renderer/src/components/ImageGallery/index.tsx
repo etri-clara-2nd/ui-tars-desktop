@@ -294,7 +294,9 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   return (
     <div className="h-full flex flex-col py-10">
       <div className="pl-4 border-t">
-        <h2 className="mt-2 mb-4 font-semibold text-lg">My Computer</h2>
+        <h2 className="mt-2 mb-4 font-semibold text-lg">
+          {settings.operator === 'browser' ? 'My Browser' : 'My Computer'}
+        </h2>
         {currentEntry.actions.map((action, idx) => {
           const ActionIcon = ActionIconMap[action.type] || MousePointerClick;
 
