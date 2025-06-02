@@ -28,6 +28,9 @@ const presetSchema = z.object({
   llavaBaseUrl: z.string().url(),
   llavaModelName: z.string().min(1),
 
+  // Robot 설정
+  robotBaseUrl: z.string().url(),
+
   // 기타 설정
   maxLoopCount: z.number().min(25).max(200),
   loopIntervalInMs: z.number().min(0).max(3000),

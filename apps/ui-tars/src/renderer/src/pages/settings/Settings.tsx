@@ -56,16 +56,21 @@ const formSchema = z.object({
   llavaBaseUrl: z.string().url(),
   llavaModelName: z.string().min(1),
 
+  // Robot 설정
+  robotBaseUrl: z.string().url(),
+
   // 기타 설정
   maxLoopCount: z.number().min(25).max(200),
   loopIntervalInMs: z.number().min(0).max(3000),
   reportStorageBaseUrl: z.string().optional(),
   utioBaseUrl: z.string().optional(),
+  operator: z.enum(['nutjs', 'browser']),
 });
 
 const SECTIONS = {
   uiTars: 'UI-TARS Settings',
   llava: 'LLaVA-OneVision Settings',
+  robot: 'Robot Settings',
   chat: 'Chat Settings',
   report: 'Report Settings',
 } as const;
@@ -99,11 +104,15 @@ export default function Settings() {
       llavaBaseUrl: 'http://129.254.196.201:8001',
       llavaModelName: 'llava-hf/llava-onevision-qwen2-7b-ov-hf',
 
+      // Robot 설정
+      robotBaseUrl: 'http://129.254.196.201:8002/v1',
+
       // 기타 설정
       maxLoopCount: 100,
       loopIntervalInMs: 1000,
       reportStorageBaseUrl: '',
       utioBaseUrl: '',
+      operator: 'browser',
       ...settings,
     },
   });
@@ -122,6 +131,7 @@ export default function Settings() {
         loopIntervalInMs: settings.loopIntervalInMs,
         reportStorageBaseUrl: settings.reportStorageBaseUrl,
         utioBaseUrl: settings.utioBaseUrl,
+        operator: settings.operator,
       });
     }
   }, [settings, form]);
@@ -408,6 +418,34 @@ export default function Settings() {
                         <Input
                           disabled={isRemoteAutoUpdatedPreset}
                           placeholder="Enter LLaVA-OneVision Model Name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Robot 설정 */}
+              <div
+                id="robot"
+                ref={(el) => {
+                  sectionRefs.current.robot = el;
+                }}
+                className="space-y-6 ml-1 mr-4"
+              >
+                <h2 className="text-lg font-medium">{SECTIONS.robot}</h2>
+                <FormField
+                  control={form.control}
+                  name="robotBaseUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Robot Base URL</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isRemoteAutoUpdatedPreset}
+                          placeholder="Enter Robot Base URL"
                           {...field}
                         />
                       </FormControl>

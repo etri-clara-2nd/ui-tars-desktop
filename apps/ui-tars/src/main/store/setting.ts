@@ -21,11 +21,12 @@ export const DEFAULT_SETTING: LocalStore = {
   llavaProvider: VLMProviderV2.llava_onevision_remote,
   llavaBaseUrl: 'http://129.254.196.201:8001',
   llavaModelName: 'llava-hf/llava-onevision-qwen2-7b-ov-hf',
+  robotBaseUrl: 'http://129.254.196.201:8002/v1',
   maxLoopCount: 100,
   loopIntervalInMs: 1000,
   reportStorageBaseUrl: '',
   utioBaseUrl: '',
-  operator: 'nutjs',
+  operator: 'browser',
 };
 
 export class SettingStore {

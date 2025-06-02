@@ -195,7 +195,10 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
     // 위치 확인 요청인 경우
     if (settings.operator === 'robot' && lastMessage?.show_screenshot) {
       // 새로운 WebSocket 연결 설정
-      const ws = new WebSocket('ws://129.254.196.201:8002/ws/robot-stream');
+      const wsUrl = settings.robotBaseUrl
+        .replace('http://', 'ws://')
+        .replace('/v1', '/ws/robot-stream');
+      const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
 
       ws.onopen = () => {

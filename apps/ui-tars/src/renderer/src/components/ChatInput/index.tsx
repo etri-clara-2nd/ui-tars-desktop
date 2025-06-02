@@ -30,8 +30,6 @@ import { useSession } from '@renderer/hooks/useSession';
 import { SelectOperator } from './SelectOperator';
 import { sleep } from '@ui-tars/shared/utils';
 
-const ROBOT_API_BASE_URL = 'http://129.254.196.201:8002/v1';
-
 const ChatInput = () => {
   const {
     status,
@@ -80,17 +78,20 @@ const ChatInput = () => {
 
     if (settings.operator === 'robot') {
       try {
-        const response = await fetch(`${ROBOT_API_BASE_URL}/chat/completions`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        const response = await fetch(
+          `${settings.robotBaseUrl}/chat/completions`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'gpt-4',
+              messages: [{ role: 'user', content: instructions }],
+              temperature: 0.7,
+            }),
           },
-          body: JSON.stringify({
-            model: 'gpt-4',
-            messages: [{ role: 'user', content: instructions }],
-            temperature: 0.7,
-          }),
-        });
+        );
 
         if (!response.ok) {
           throw new Error('Failed to send message to robot');
@@ -130,7 +131,7 @@ const ChatInput = () => {
             if (actionMatch) {
               const action = JSON.parse(actionMatch[0]);
               const actionResponse = await fetch(
-                `${ROBOT_API_BASE_URL}/robot/action`,
+                `${settings.robotBaseUrl}/robot/action`,
                 {
                   method: 'POST',
                   headers: {

@@ -69,6 +69,9 @@ export interface LocalStore {
   llavaBaseUrl: string;
   llavaModelName: string;
 
+  // Robot 설정
+  robotBaseUrl: string;
+
   // 기타 설정
   maxLoopCount: number;
   loopIntervalInMs: number;
